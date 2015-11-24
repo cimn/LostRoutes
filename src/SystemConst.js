@@ -82,4 +82,11 @@ HIGHSCORE_KEY = "highscore_key";
 BOOL = {
     NO:"0",
     YES:"1"
+};
+
+//检测碰撞
+Collision_Type2 = {
+    Enemy: 1,
+    Fighter: 1,
+    Bullet: 1
 }
