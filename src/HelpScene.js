@@ -41,7 +41,24 @@ var HelpLayer = cc.Layer.extend({
             cc.audioEngine.playEffect(res_platform.effectBlip);
         }
 
+    },
+    onEnterTransitionDidFinish: function(){
+        this._super();
+        cc.log("HelpLayer onEnterTransitionDidFinish");
+        if (musicStatus == BOOL.YES) {
+            cc.audioEngine.playMusic(res_platform.musicHome, true);
+        }
+    },
+    onExit: function () {
+        this._super();
+        cc.log("HelpLayer onExit");
+    },
+    onExitTransitionDidStart: function () {
+        this._super();
+        cc.log("HelpLayer onExitTransitionDidStart");
+        cc.audioEngine.stopMusic(res_platform.musicHome);
     }
+
 });
 
 var HelpScene = cc.Scene.extend({
