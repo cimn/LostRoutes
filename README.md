@@ -1,3 +1,3 @@
-# cocos2d-js
-LostRoutes
-This is my first game on dev by github.
+# LostRoutes
+ dev by cocos2d-js
+This is my first game on  github.
