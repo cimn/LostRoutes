@@ -81,7 +81,7 @@
                     cc.log("StartCallback");
                     break;
                 case HomeMenuActionTypes.MenuItemHelp:
-                    tsc = new cc.TransitionFade(1.0, new HelpScene());cp.Body
+                    tsc = new cc.TransitionFade(1.0, new HelpScene());
                     cc.log("HelpCallback");
                     break;
                 case HomeMenuActionTypes.MenuItemSetting:
