@@ -48,14 +48,18 @@
  */
 
 cc.game.onStart = function(){
+    //设置html5的viewport meta属性
     cc.view.adjustViewPort(true);
+    //设置画面尺寸和适配规则
     cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.FIXED_WIDTH);
+    //设置是否跟随浏览器窗口变化
     cc.view.resizeWithBrowserSize(true);
+    //Loading界面
     cc._loaderImage = res.loading_jpg;
 
     //load resources
     cc.LoaderScene.preload(g_resources, function () {
-        cc.director.runScene(new SettingScene());
+        cc.director.runScene(new HomeScene());
     }, this);
 };
-cc.game.run();
+cc.game.run();  //游戏启动

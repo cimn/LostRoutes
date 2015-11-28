@@ -82,9 +82,51 @@
     menuSoundToggleCallback: function(sender){
         cc.log("menuSoundToggleCallback!");
         if(effectStatus == BOOL.YES){
-
+            cc.sys.localStorage.setItem(EFFECT_KEY,BOOL.NO);
+            effectStatus == BOOL.NO;
+        }else{
+            cc.sys.localStorage.setItem(EFFECT_KEY,BOOL.YES);
+            effectStatus == BOOL.YES;
         }
+    },
+    menuMusicToggleCallback: function(sender){
+        cc.log("menuMusicToggleCallback!");
+        if(musicStatus == BOOL.YES){
+            cc.sys.localStorage.setItem(MUSIC_KEY,BOOL.NO);
+            musicStatus == BOOL.NO;
+            cc.audioEngine.stopMusic();
+        }else{
+            cc.sys.localStorage.setItem(MUSIC_KEY,BOOL.YES);
+            musicStatus == BOOL.YES;
+            cc.audioEngine.playMusic(res.platform.musicHome,true);
+        }
+    },
+    menuOkCallback: function(sender){
+        cc.log("menuOkCallback!");
+        cc.director.popScene();
+        //
+        if(effectStatus == BOOL.YES){
+            cc.audioEngine.playEffect(res.platform.effectBlip);
+        }
+    },
+    onEnterTransitionDidFinish: function () {
+        this._super();
+        cc.log("SettingLayer onEnterTransitionDidFinish");
+        if (musicStatus == BOOL.YES) {
+            cc.audioEngine.playMusic(res_platform.musicHome, true);
+        }
+    },
+    onExit: function () {
+        this._super();
+        cc.log("SettingLayer onExit");
+    },
+    onExitTransitionDidStart: function () {
+        this._super();
+        cc.log("SettingLayer onExitTransitionDidStart");
+        cc.audioEngine.stopMusic(res_platform.musicHome);
     }
+
+
 
 });
 

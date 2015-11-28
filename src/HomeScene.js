@@ -13,7 +13,7 @@
             winSize = cc.director.getWinSize();
             //加载精灵帧缓存*必须是addSpriteFrames复数*
             cc.spriteFrameCache.addSpriteFrames(res_platform.texture_plist,res_platform.texture_res);
-
+            //数据持久化
             musicStatus = cc.sys.localStorage.getItem(MUSIC_KEY);
             effectStatus = cc.sys.localStorage.getItem(EFFECT_KEY);
 
