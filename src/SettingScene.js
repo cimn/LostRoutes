@@ -67,12 +67,14 @@
             musicToggleMenuItem.setSelectedIndex(0);
         }else{
             musicToggleMenuItem.setSelectedIndex(1);
+            //musicToggleMenuItem.setSelectedSpriteFrame(soundOffMenuItem);
         }
 
         if(effectStatus == BOOL.YES){
             soundToggleMenuItem.setSelectedIndex(0);
         }else{
             soundToggleMenuItem.setSelectedIndex(1);
+            //musicToggleMenuItem.setSelectedSpriteFrame(soundOffMenuItem);
         }
 
         return true;
