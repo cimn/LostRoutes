@@ -49,7 +49,7 @@
 
 cc.game.onStart = function(){
     //设置html5的viewport meta属性
-    cc.view.adjustViewPort(true);
+    //cc.view.adjustViewPort(true);
     //设置画面尺寸和适配规则
     cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.FIXED_WIDTH);
     //设置是否跟随浏览器窗口变化

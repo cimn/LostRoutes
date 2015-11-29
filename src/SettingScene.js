@@ -1,7 +1,7 @@
 /**
  * Created by cimn on 2015/11/26.
  */
-    var SettingLayer = cc.Layer.extend({
+var SettingLayer = cc.Layer.extend({
 
     ctor: function(){
         this._super();
@@ -16,8 +16,6 @@
         settingPage.x = winSize.width / 2;
         settingPage.y = winSize.height / 2;
         this.addChild(settingPage);
-
-
         //“Ù–ß
         var soundOnMenuItem = new cc.MenuItemImage(
             "#check-on.png",
@@ -25,7 +23,7 @@
         var soundOffMenuItem = new cc.MenuItemImage(
             "#check-off.png",
             "#check-off.png");
-        var soundToggleMenuItem = new cc.MenuItemImage(
+        var soundToggleMenuItem = new cc.MenuItemToggle(
             soundOnMenuItem,
             soundOffMenuItem,
             this.menuSoundToggleCallback,this);
@@ -39,7 +37,7 @@
         var musicOffMenuItem = new cc.MenuItemImage(
             "#check-off.png",
             "#check-off.png");
-        var musicToggleMenuItem = new cc.MenuItemImage(
+        var musicToggleMenuItem = new cc.MenuItemToggle(
             musicOnMenuItem,
             musicOffMenuItem,
             this.menuMusicToggleCallback,this);
@@ -67,14 +65,12 @@
             musicToggleMenuItem.setSelectedIndex(0);
         }else{
             musicToggleMenuItem.setSelectedIndex(1);
-            //musicToggleMenuItem.setSelectedSpriteFrame(soundOffMenuItem);
         }
 
         if(effectStatus == BOOL.YES){
             soundToggleMenuItem.setSelectedIndex(0);
         }else{
             soundToggleMenuItem.setSelectedIndex(1);
-            //musicToggleMenuItem.setSelectedSpriteFrame(soundOffMenuItem);
         }
 
         return true;
@@ -99,8 +95,8 @@
             cc.audioEngine.stopMusic();
         }else{
             cc.sys.localStorage.setItem(MUSIC_KEY,BOOL.YES);
-            musicStatus == BOOL.YES;
-            cc.audioEngine.playMusic(res.platform.musicHome,true);
+            //musicStatus == BOOL.YES;
+            cc.audioEngine.playMusic(res_platform.musicHome,true);
         }
     },
     menuOkCallback: function(sender){
@@ -108,7 +104,7 @@
         cc.director.popScene();
         //
         if(effectStatus == BOOL.YES){
-            cc.audioEngine.playEffect(res.platform.effectBlip);
+            cc.audioEngine.playEffect(res_platform.effectBlip);
         }
     },
     onEnterTransitionDidFinish: function () {

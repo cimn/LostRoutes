@@ -14,7 +14,8 @@
         "src/resource.js",
         "src/SystemConst.js",
         "src/HomeScene.js",
-        "src/HelpScene.js",
-        "src/SettingScene.js"
+        "src/SettingScene.js",
+        "src/HelpScene.js"
+
     ]
 }
