@@ -37,9 +37,27 @@ var Enemy = cc.PhysicsSprite.extend({
                 break;
         }
 
-        //根据精灵帧名调用父类构造函数
+        //根据精灵帧名调用父类构造函数init
         this._super("#"+enemyFramName);
         this.setVisible(false);
+
+        this.initialHitPoints = hitPointsTemp;
+
+        this.velocity = velocityTemp;
+
+        this.enemyType = enemyType;
+
+
+        this.space = space;
+
+
+
+        var shape;
+
+        if(enemyType == EnemyTypes.Enemy_Stone || enemyType == EnemyTypes.Enemy_Planet){
+
+        }
+
 
 
 
