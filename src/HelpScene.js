@@ -15,7 +15,7 @@ var HelpLayer = cc.Layer.extend({
         page.y = winSize.height / 2;
         this.addChild(page);
 
-        //OK≤Àµ•
+        //OKËèúÂçï
         var okNormal = new cc.Sprite("#button.ok.png");
         var okSelected = new cc.Sprite("#button.ok-on.png");
         var okMenuItem = new cc.MenuItemSprite(
@@ -36,7 +36,7 @@ var HelpLayer = cc.Layer.extend({
     menuItemCallback: function(sender){
         cc.log("Touch Start Menu Item " + sender);
         cc.director.popScene();
-        //≤•∑≈“Ù–ß
+        //Èü≥Êïà
         if (effectStatus == BOOL.YES){
             cc.audioEngine.playEffect(res_platform.effectBlip);
         }

@@ -8,11 +8,11 @@ var Enemy = cc.PhysicsSprite.extend({
     velocity: null,
     space: null,
     ctor: function(enemyType,space){
-        //¾«ÁéÖ¡
+        //ç²¾çµå¸§
         var enemyFramName = EnemyName.Enemy_Stone;
-        //µÃ·ÖÖµ
+        //å¾—åˆ†å€¼
         var hitPointsTemp = 0;
-        //ËÙ¶È
+        //é€Ÿåº¦
         var velocityTemp = cc.p(0,0);
         switch (enemyType){
             case  EnemyTypes.Enemy_Stone:
@@ -37,7 +37,7 @@ var Enemy = cc.PhysicsSprite.extend({
                 break;
         }
 
-        //¸ù¾İ¾«ÁéÖ¡Ãûµ÷ÓÃ¸¸Àà¹¹Ôìº¯Êıinit
+        //æ ¹æ®ç²¾çµå¸§åè°ƒç”¨çˆ¶ç±»æ„é€ å‡½æ•°init
         this._super("#"+enemyFramName);
         this.setVisible(false);
 
