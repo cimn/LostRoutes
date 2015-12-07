@@ -1,12 +1,12 @@
 /**
  * Created by cimn on 2015/11/29.
  */
-var Enemy = cc.PhysicsSprite.extend({
-    enemyType: 0,
-    initialHitPoints: 0,
-    hitPoints: 0,
-    velocity: null,
-    space: null,
+var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
+    enemyType: 0,   //敌人类型
+    initialHitPoints: 0,    //初始生命值
+    hitPoints: 0,   //当前的生命值
+    velocity: null,     //速度
+    space: null,    //物理空间
     ctor: function(enemyType,space){
         //精灵帧
         var enemyFramName = EnemyName.Enemy_Stone;
