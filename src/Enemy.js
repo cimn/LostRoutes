@@ -47,7 +47,6 @@ var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
 
         this.enemyType = enemyType;
 
-
         this.space = space;
 
 
@@ -55,11 +54,56 @@ var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
         var shape;
 
         if(enemyType == EnemyTypes.Enemy_Stone || enemyType == EnemyTypes.Enemy_Planet){
-
+            this.body = new cp.Body(10,cp.momentForCircle(1,0,this.getContentSize().width/2-5,cp.v(0,0)));
+            shape = new cp.CircleShape(this.body,this.getContentSize().width/2-5,cp.v(0,0));
+        }else if(enemyType = EnemyTypes.Enemy_1){
+            var verts = [
+                -5, -91.5,
+                -59, -54.5,
+                -106, -0.5,
+                -68, 86.5,
+                56, 88.5,
+                110, -4.5
+            ];
+            this.body = new cp.Body(1,cp.momentForPoly(1,verts,cp.vzero));
+            shape = new cp.PolyShape(this.body,verts,cp.vzero);
+        }else if(enemyType = EnemyTypes.Enemy_2){
+            var verts = [
+                2.5, 64.5,
+                73.5, -9.5,
+                5.5, -63.5,
+                -71.5, -6.5
+            ];
+            this.body = new cp.Body(1,cp.momentForPoly(1,verts,cp.vzero));
+            shape = new cp.PolyShape(this.body,verts,cp.vzero);
         }
 
 
+        this.space.addBody(this.body);
+        shape.setElasticity(0.5);
+        shape.setFriction(0.5);
+        shape.setCollisionType(Collision_Type.Enemy);
+        this.space.addShape(shape);
 
+        //this.setBody(this.body);
+
+        this.body.data = this;
+        this.scheduleUpdate();
+    },
+    update: function (dt) {
+        //设置陨石和行星旋转
+        switch (this.enemyType){
+            case EnemyTypes.Enemy_Stone:
+                this.setRotation(this.getRotation()-0.5);
+                break;
+            case EnemyTypes.Enemy_Planet:
+                this.setRotation(this.getRotation()+1);
+                break;
+        }
+        var newX = this.body.getPos().x + this.velocity.x * dt;
+        var newY = this.body.getPos().y + this.velocity.y * dt;
+
+        this.body.setPos(cc.p(newX,newY));
 
     }
 })
