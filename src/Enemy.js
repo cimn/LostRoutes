@@ -105,5 +105,16 @@ var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
 
         this.body.setPos(cc.p(newX,newY));
 
+        //超出下屏幕重新生成敌人
+        if(this.body.getPos().y + this.getContentSize().height / 2  < 0){
+            this.spawn();
+        }
+    },
+    spawn: function(){
+        var yPos = winSize.height + this.getContentSize().height / 2;
+        var xPos = cc.random0To1()*(winSize.width-this.getContentSize().width) + this.getContentSize().width / 2;
+        this.body.setPos(cc.p(xPos,yPos));
+        this.hitPoints = this.initialHitPoints;
+        this.setVisible(true);
     }
-})
+});
