@@ -35,7 +35,26 @@ var Figether = cc.PhysicsSprite.extend({
         ps.setScale(0.5);
         this.addChild(ps);
     },
-    setPosition: function(newPosition){
 
+    //重写setPosition=>使飞机body在屏幕之内
+    setPosition: function(newPosition){
+        var halfWidth = this.getContentSize().width / 2;
+        var halfHeight = this.getContentSize().height / 2;
+        var pos_x = newPosition.x;
+        var pos_y = newPosition.y;
+
+        if(pos_x < halfWidth){
+            pos_x = halfWidth;
+        }else if(pos_x > (winSize.width - halfWidth)){
+            pos_x = winSize.width - halfWidth;
+        }
+
+        if(pos_y< halfHeight){
+            pos_y = halfHeight;
+        }else if(pos_y > winSize.height - halfHeight){
+            pos_y = winSize.height - halfHeight;
+        }
+
+        this.body.setPos(cc.p(pos_x,pos_y));
     }
-})
+});
