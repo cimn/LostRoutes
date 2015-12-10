@@ -48,13 +48,13 @@
  */
 
 cc.game.onStart = function(){
-    //ÉèÖÃhtml5µÄviewport metaÊôĞÔ
+    //è®¾ç½®html5çš„viewport metaå±æ€§
     //cc.view.adjustViewPort(true);
-    //ÉèÖÃ»­Ãæ³ß´çºÍÊÊÅä¹æÔò
+    //è®¾ç½®ç”»é¢å°ºå¯¸å’Œé€‚é…è§„åˆ™
     cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.FIXED_WIDTH);
-    //ÉèÖÃÊÇ·ñ¸úËæä¯ÀÀÆ÷´°¿Ú±ä»¯
+    //è®¾ç½®æ˜¯å¦è·Ÿéšæµè§ˆå™¨çª—å£å˜åŒ–
     cc.view.resizeWithBrowserSize(true);
-    //Loading½çÃæ
+    //Loading image
     cc._loaderImage = res.loading_jpg;
 
     //load resources
@@ -62,4 +62,4 @@ cc.game.onStart = function(){
         cc.director.runScene(new HomeScene());
     }, this);
 };
-cc.game.run();  //ÓÎÏ·Æô¶¯
+cc.game.run();  //æ¸¸æˆå¯åŠ¨

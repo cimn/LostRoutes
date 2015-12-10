@@ -16,7 +16,7 @@ var SettingLayer = cc.Layer.extend({
         settingPage.x = winSize.width / 2;
         settingPage.y = winSize.height / 2;
         this.addChild(settingPage);
-        //ÒôĞ§
+        //éŸ³æ•ˆ
         var soundOnMenuItem = new cc.MenuItemImage(
             "#check-on.png",
             "#check-on.png");
@@ -30,7 +30,7 @@ var SettingLayer = cc.Layer.extend({
         soundToggleMenuItem.x = winSize.width /2 + 100;
         soundToggleMenuItem.y = winSize.height /2 + 180;
 
-        //ÒôÀÖ
+        //éŸ³ä¹
         var musicOnMenuItem = new cc.MenuItemImage(
             "#check-on.png",
             "#check-on.png");
@@ -44,7 +44,7 @@ var SettingLayer = cc.Layer.extend({
         musicToggleMenuItem.x = soundToggleMenuItem.x;
         musicToggleMenuItem.y = soundToggleMenuItem.y - 110;
 
-        //OK²Ëµ¥
+        //OKèœå•
         var okNormal = new cc.Sprite("#button.ok.png");
         var okSelected = new cc.Sprite("#button.ok-on.png");
         var okMenuItem = new cc.MenuItemSprite(
@@ -60,7 +60,7 @@ var SettingLayer = cc.Layer.extend({
         mu.y = 0;
         this.addChild(mu);
 
-        //ÉèÖÃÒôĞ§ºÍÒôÀÖÑ¡ÖĞ×´Ì¬
+        //è®¾ç½®éŸ³æ•ˆå’ŒéŸ³ä¹é€‰ä¸­çŠ¶æ€
         if(musicStatus == BOOL.YES){
             musicToggleMenuItem.setSelectedIndex(0);
         }else{
@@ -95,14 +95,14 @@ var SettingLayer = cc.Layer.extend({
             cc.audioEngine.stopMusic();
         }else{
             cc.sys.localStorage.setItem(MUSIC_KEY,BOOL.YES);
-            //musicStatus == BOOL.YES;
+            musicStatus == BOOL.YES;
             cc.audioEngine.playMusic(res_platform.musicHome,true);
         }
     },
     menuOkCallback: function(sender){
         cc.log("menuOkCallback!");
         cc.director.popScene();
-        //
+        //æ’­æ”¾éŸ³æ•ˆ
         if(effectStatus == BOOL.YES){
             cc.audioEngine.playEffect(res_platform.effectBlip);
         }
