@@ -61,5 +61,6 @@ cc.game.onStart = function(){
     cc.LoaderScene.preload(g_resources, function () {
         cc.director.runScene(new HomeScene());
     }, this);
+    cc.sys.dump();
 };
 cc.game.run();  //游戏启动
