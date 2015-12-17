@@ -35,7 +35,7 @@ var Bullet = new cc.PhysicsSprite.extend({
         }
     },
     unuse: function(){
-        this.retain();  //if i jsb
+        this.retain();  //if in jsb
         this.setVisible(false);
     },
     reuse: function(spriteFrameName,space){
