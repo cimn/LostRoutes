@@ -56,7 +56,7 @@ var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
         if(enemyType == EnemyTypes.Enemy_Stone || enemyType == EnemyTypes.Enemy_Planet){
             this.body = new cp.Body(10,cp.momentForCircle(1,0,this.getContentSize().width/2-5,cp.v(0,0)));
             shape = new cp.CircleShape(this.body,this.getContentSize().width/2-5,cp.v(0,0));
-        }else if(enemyType = EnemyTypes.Enemy_1){
+        }else if(enemyType == EnemyTypes.Enemy_1){
             var verts = [
                 -5, -91.5,
                 -59, -54.5,
@@ -67,7 +67,7 @@ var Enemy = cc.PhysicsSprite.extend({//PhysicsSprite
             ];
             this.body = new cp.Body(1,cp.momentForPoly(1,verts,cp.vzero));
             shape = new cp.PolyShape(this.body,verts,cp.vzero);
-        }else if(enemyType = EnemyTypes.Enemy_2){
+        }else if(enemyType == EnemyTypes.Enemy_2){
             var verts = [
                 2.5, 64.5,
                 73.5, -9.5,

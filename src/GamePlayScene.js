@@ -70,7 +70,46 @@ var GamePlayLayer = cc.Layer.extend({
         pauseMenu.setPosition(cc.p(30,winSize.height-30));
         this.addChild(pauseMenu);
 
-        //add stone
+        //add stone1
+        var stone1 = new Enemy(EnemyTypes.Enemy_Stone,this.space);
+        this.addChild(stone1,10,GameSceneNodeTag.BatchBackground);
+
+        //add planet
+        var planet = new Enemy(EnemyTypes.Enemy_Planet,this.space);
+        this.addChild(planet,10,GameSceneNodeTag.Enemy);
+
+        //add EnemyFighter1
+        var enemyFighter1 = new Enemy(EnemyTypes.Enemy_1,this.space);
+        this.addChild(enemyFighter1,10,GameSceneNodeTag.Enemy);
+
+        //add EnemyFighter2
+        var enemyFighter2 = new Enemy(EnemyTypes.Enemy_2,this.space);
+        this.addChild(enemyFighter2,10,GameSceneNodeTag.Enemy);
+
+        //player
+        this.fighter = new Figether("#gameplay.fighter.png", this.space);
+        this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
+        this.addChild(this.fighter,10,GameSceneNodeTag.Fighter);
+
+        //创建触摸飞机事件监听
+        this.touchFighterlistener = new cc.EventListener.create({
+            evnet: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function(touch,event){
+                return true;
+            },
+            onTouchMoved: function(touch,evnet){
+                var target = evnet.getCurrentTarget();
+                var delta = touch.getDelta();
+                //移动当前按钮精灵的坐标位置
+                var pos_x = target.body.getPos().x + delta.x;
+                var pos_y = target.body.getPos().y + delta.y;
+                target.body.setPos(cc.p(pos_x,pos_y));
+            }
+        });
+
+
+
 
     },
     menuPauseCallback: function(){
