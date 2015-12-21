@@ -91,7 +91,7 @@ var GamePlayLayer = cc.Layer.extend({
         this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
         this.addChild(this.fighter,10,GameSceneNodeTag.Fighter);
 
-        //创建触摸飞机事件监听
+        //创建---事件监听
         this.touchFighterlistener = new cc.EventListener.create({
             evnet: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
@@ -99,6 +99,7 @@ var GamePlayLayer = cc.Layer.extend({
                 return true;
             },
             onTouchMoved: function(touch,evnet){
+                cc.log("onTouchMoved!");
                 var target = evnet.getCurrentTarget();
                 var delta = touch.getDelta();
                 //移动当前按钮精灵的坐标位置
@@ -107,12 +108,33 @@ var GamePlayLayer = cc.Layer.extend({
                 target.body.setPos(cc.p(pos_x,pos_y));
             }
         });
+        //注册---事件监听
+        cc.eventManager.addListener(this.touchFighterlistener,this.fighter);
+        this.touchFighterlistener.retain();
+
+        //every 0.3 second one bullet
+        this.schedule(this.shootBullet, 0.2);
+
+        //this.updateStatusBarFighter();
+
+        //this.updateStatusBarScore();
+    },
+    collisionBegin:function(arbiter, space){
+        var shapes = arbiter.getShape();
+        var bodyA = shapes.getBody();
+        var bodyB = shapes.getBody();
+
+        var spriteA = bodyA.data;
+        var spriteB = bodyB.data;
 
 
 
 
     },
     menuPauseCallback: function(){
+
+    },
+    shootBullet: function(){
 
     }
 });
