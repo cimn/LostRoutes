@@ -91,55 +91,117 @@ var GamePlayLayer = cc.Layer.extend({
         this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
         this.addChild(this.fighter,10,GameSceneNodeTag.Fighter);
 
-        //创建---事件监听
+        //创建触摸飞机事件监听
         this.touchFighterlistener = new cc.EventListener.create({
-            evnet: cc.EventListener.TOUCH_ONE_BY_ONE,
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function(touch,event){
                 return true;
             },
             onTouchMoved: function(touch,evnet){
-                cc.log("onTouchMoved!");
                 var target = evnet.getCurrentTarget();
                 var delta = touch.getDelta();
-                //移动当前按钮精灵的坐标位置
+                //移动当前精灵的坐标位置
                 var pos_x = target.body.getPos().x + delta.x;
                 var pos_y = target.body.getPos().y + delta.y;
                 target.body.setPos(cc.p(pos_x,pos_y));
             }
         });
-        //注册---事件监听
+        //注册监听器
         cc.eventManager.addListener(this.touchFighterlistener,this.fighter);
-        this.touchFighterlistener.retain();
+        this.touchFighterlistener.retain(); //if in jsb
 
-        //every 0.3 second one bullet
+        //状态栏中设置玩家生命值
+        this.updataStatusBarFighter();
+        //状态栏中显示得分
+        this.updataStatusBarScore();
+
+        //每0.2s 调用shootBullet函数发射1发炮弹.
         this.schedule(this.shootBullet, 0.2);
 
-        //this.updateStatusBarFighter();
-
-        //this.updateStatusBarScore();
-    },
-    collisionBegin:function(arbiter, space){
-        var shapes = arbiter.getShape();
-        var bodyA = shapes.getBody();
-        var bodyB = shapes.getBody();
-
-        var spriteA = bodyA.data;
-        var spriteB = bodyB.data;
-
-
-
 
     },
-    menuPauseCallback: function(){
+    menuPauseCallback: function(sender){
+        //播放音效
+        if(effectStatus == BOOL.YES){
+            cc.audioEngine.playEffect(res_platform.effectBlip);
+        }
+        var nodes = this.getChildren();
+        for(var i=0;i < nodes.length;i++){
+            var node = nodes[i];
+            node.unscheduleUpdate();
+            this.unschedule(this.shootBullet);
+        }
+        //暂停touchEvent
+        cc.eventManager.pauseTarget(this.fighter);
+
+        //返回主菜单
+        var backNormal =new cc.Sprite("#button.back.png");
+        var backSelected = new cc.Sprite("#button.back-on.png");
+
+        var backMenuItem = new cc.MenuItemSprite(backNormal,backSelected,
+            function (sender) {
+                //play effect
+                if(effectStatus == BOOL.YES){
+                    cc.audioEngine.playEffect(res_platform.effectBlip);
+                }
+                cc.director.popScene();
+            },this);
+
+        //继续游戏菜单
+        var resumeNormal = new cc.Sprite("#button.resume.png");
+        var resumeSelected = new cc.Sprite("#button.resume-on.png");
+        var resumeMenuItem = new cc.MenuItemSprite(resumeNormal,resumeSelected,
+            function (sender) {
+                //play effect
+                if(effectStatus == BOOL.YES){
+                    cc.audioEngine.playEffect(res_platform.effectBlip);
+                }
+                var nodes = this.getChildren();
+                for(var i =0;i < nodes.length; i++){
+                    var node = nodes[i];
+                    node.scheduleUpdate();
+                    this.schedule(this.shootBullet,0.2);
+                }
+                cc.eventManager.resumeTarget(this.fighter);
+                this.removeChild(this.menu);
+
+            },this);
+        this.menu = new cc.Menu(backMenuItem,resumeMenuItem);
+        this.menu.alignItemsVertically();
+        this.menu.x = winSize.width / 2;
+        this.menu.y = winSize.height / 2;
+        this.addChild(this.menu,20,1000)
+    },
+    shootBullet:function(dt){
 
     },
-    shootBullet: function(){
-
+    onExit: function(){
+        cc.log("GamePlayLayer onExit");
+        this.unscheduleUpdate();
+        //停止shootBullet
+        this.unschedule(this.shootBullet);
+        //注销监听器
+        if(this.touchFighterlistener != null){
+            cc.eventManager.removeListener(this.touchFighterlistener);
+            this.touchFighterlistener.release(); //release内存
+            this.touchFighterlistener = null;
+        }
+        this.removeAllChildren(true);
+        cc.pool.drainAllPools();
+        this._super();
+    },
+    onEnterTransitionDidFinish: function(){
+        this._super();
+        cc.log("GamePlayLayer onEnterTransitionDidFinish");
+        if(musicStatus == BOOL.YES){
+            //play bg
+            cc.audioEngine.playMusic(res_platform.musicGame,true);
+        }
     }
 });
 
-    var GamePlayScene = cc.Scene.extend({
+var GamePlayScene = cc.Scene.extend({
     onEnter: function(){
         this._super();
         var layer = new GamePlayLayer;
