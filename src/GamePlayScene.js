@@ -25,7 +25,7 @@ var GamePlayLayer = cc.Layer.extend({
         // 设置重力
         this.space.gravity = cp.v(0, 0);//cp.v(0, -100);
         this.space.addCollisionHandler(Collision_Type.Bullet, Collision_Type.Enemy,
-            this.collisionBegin.bind(this), null, null, null
+            this.collisionBegin.bind(this), null, null, null    //回调开始前，回调开始时，回调结束时，回调结束后
         );
 
 
@@ -184,6 +184,33 @@ var GamePlayLayer = cc.Layer.extend({
             }
             bullet.shootBulletFromFighter(cc.p(this.fighter.x, this.fighter.y + this.fighter.getContentSize().height/2));
         }
+    },
+    //////////////////////////////////Begin//////////////////////////////////
+    collisionBegin: function(arbiter,space){
+        var shapes = arbiter.getShapes();
+        var bodyA = shapes[0].getBody();
+        var bodyB = shapes[1].getBody();
+
+        var spriteA = bodyA.data;
+        var spriteB = bodyB.data;
+
+        //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
+            spriteA.setVisible(false);      //bullet 消失
+            cc.pool.putInPool(spriteA);
+            this.handleBulletCollidingWithEnemy(spriteA);
+            return false;
+        }
+        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
+            spriteB.setVisible(false);
+            cc.pool.putInPool(spriteB);
+            this.handleBulletCollidingWithEnemy(spriteB);
+            return false;
+        }
+        return false;
+    },
+    handleBulletCollidingWithEnemy: function () {
+
     },
     onExit: function(){
         cc.log("GamePlayLayer onExit");
