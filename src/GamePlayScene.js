@@ -198,18 +198,69 @@ var GamePlayLayer = cc.Layer.extend({
         if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
             spriteA.setVisible(false);      //bullet 消失
             cc.pool.putInPool(spriteA);
-            this.handleBulletCollidingWithEnemy(spriteA);
+            this.handleBulletCollidingWithEnemy(spriteB);
             return false;
         }
+        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && bullet.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
             spriteB.setVisible(false);
             cc.pool.putInPool(spriteB);
-            this.handleBulletCollidingWithEnemy(spriteB);
+            this.handleBulletCollidingWithEnemy(spriteA);
             return false;
         }
         return false;
     },
-    handleBulletCollidingWithEnemy: function () {
+    handleBulletCollidingWithEnemy: function (enemy) {
+        enemy.hitPoints--;
+        if(enemy.hitPoints == 0){
+            var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
+            if(node){
+                this.removeChild(node);
+            }
+            //爆炸粒子特效
+            var explosion = new cc.ParticleSystem(res.explosion_plist);
+            explosion.x = enemy.x;
+            explosion.y = enemy.y;
+            this.addChild(explosion,2,GameSceneNodeTag.ExplosionParticleSystem);
+            //爆炸音效
+            if(effectStatus ==BOOL.YES){
+                cc.audioEngine.playEffect(res_platform.effectExplosion);
+            }
+
+            switch (EnemyTypes){
+                case EnemyTypes.Enemy_Stone:
+                    this.score += EnemyTypes.Enemy_Stone;
+                    this.scorePlaceholder += EnemyTypes.Enemy_Stone;
+                    break;
+                case EnemyTypes.Enemy_1:
+                    this.score += EnemyTypes.Enemy_1;
+                    this.scorePlaceholder += EnemyTypes.Enemy_1;
+                    break;
+                case EnemyTypes.Enemy_2:
+                    this.score += EnemyTypes.Enemy_2;
+                    this.scorePlaceholder += EnemyTypes.Enemy_2;
+                    break;
+                case EnemyTypes.Enemy_Planet:
+                    this.score += EnemyTypes.Enemy_Planet;
+                    this.scorePlaceholder += EnemyTypes.Enemy_Planet;
+                    break;
+            }
+            //每获得1000分，生命值+1，scorePlaceholder = 0;
+            if(this.scorePlaceholder >= 1000){
+                this.fighter.hitPoints++;
+                this.scorePlaceholder -= 1000;
+                this.updateStatusBarFighter();
+            }
+            this.updateStatusBarScore();
+            //敌人消失
+            enemy.setVisible(false);
+            enemy.spawn();  //?
+        }
+    },
+    updateStatusBarFighter: function () {
+
+    },
+    updateStatusBarScore: function () {
 
     },
     onExit: function(){
