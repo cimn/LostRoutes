@@ -45,7 +45,7 @@ var Bullet = new cc.PhysicsSprite.extend({
     }
 });
 
-
+    //pool对象缓冲池的使用
 Bullet.create = function(spriteFrameName,space){
     if(cc.pool.hasObject(Bullet)) {
         return cc.pool.getFromPool(Bullet, spriteFrameName, space);

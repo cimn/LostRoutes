@@ -173,8 +173,17 @@ var GamePlayLayer = cc.Layer.extend({
         this.menu.y = winSize.height / 2;
         this.addChild(this.menu,20,1000)
     },
+    //Fighter shoot bullet
     shootBullet:function(dt){
-
+        if(this.fighter && this.fighter.isVisible()){
+            var bullet = Bullet.create("#gameplay.bullet.png",this.space);
+            bullet.velocity = Sprite_Velocity.Bullet;
+            if(bullet.getParent() == null){
+                this.addChild(bullet, 0, GameSceneNodeTag.Bullet);
+                cc.pool.putInPool(this.bullet);
+            }
+            bullet.shootBulletFromFighter(cc.p(this.fighter.x, this.fighter.y + this.fighter.getContentSize().height/2));
+        }
     },
     onExit: function(){
         cc.log("GamePlayLayer onExit");
