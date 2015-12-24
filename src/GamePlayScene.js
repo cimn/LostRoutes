@@ -193,7 +193,7 @@ var GamePlayLayer = cc.Layer.extend({
 
         var spriteA = bodyA.data;
         var spriteB = bodyB.data;
-
+        //enemy collision bullet
         //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
             spriteA.setVisible(false);      //bullet 消失
@@ -206,6 +206,21 @@ var GamePlayLayer = cc.Layer.extend({
             spriteB.setVisible(false);
             cc.pool.putInPool(spriteB);
             this.handleBulletCollidingWithEnemy(spriteA);
+            return false;
+        }
+        //fighter collision enemy
+        //Figether.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Figether && spriteB instanceof Enemy && spriteB.isVisible()){
+            spriteA.setVisible(false);
+            cc.pool.putInPool(spriteA);
+            this.handleFighterCollidingWithEnemy(spriteB);
+            return false;
+        }
+        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && Figether.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Figether){
+            spriteB.setVisible(false);
+            cc.pool.putInPool(spriteB);
+            this.handleFighterCollidingWithEnemy(spriteA);
             return false;
         }
         return false;
@@ -256,6 +271,26 @@ var GamePlayLayer = cc.Layer.extend({
             enemy.setVisible(false);
             enemy.spawn();  //?
         }
+    },
+    //处理玩家与敌人的碰撞检测
+    handleFighterCollidingWithEnemy: function (enemy) {
+        var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
+        if(node){
+            this.removeChild(node);
+        }
+        var explosion = new cc.ParticleSystem(res.explosion_plist);
+        explosion.x = this.fighter.x;
+        explosion.y = this.fighter.y;
+        this.addChild(explosion, 2, GameSceneNodeTag.ExplosionParticleSystem);
+        if(effectStatus ==BOOL.YES){
+            cc.audioEngine.playEffect(res_platform.effectExplosion);
+        }
+        //enemy 消失
+        enemy.setVisible(false);
+        enemy.spawn();
+        //fighter 消失
+        this.fighter.hitPoints--;
+        this.updateStatusBarFighter();
     },
     updateStatusBarFighter: function () {
 
