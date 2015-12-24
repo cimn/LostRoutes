@@ -1,6 +1,7 @@
 /**
  * Created by cimn_HJ on 2015/11/28.
  */
+
 var GamePlayLayer = cc.Layer.extend({
     score: 0,           //分数
     scorePlaceholder: 0,        //记录0-999分数
@@ -68,7 +69,7 @@ var GamePlayLayer = cc.Layer.extend({
 
         var pauseMenu = new cc.Menu(pauseMenuItem);
         pauseMenu.setPosition(cc.p(30,winSize.height-30));
-        this.addChild(pauseMenu);
+        this.addChild(pauseMenu, 200, 999);
 
         //add stone1
         var stone1 = new Enemy(EnemyTypes.Enemy_Stone,this.space);
@@ -87,7 +88,7 @@ var GamePlayLayer = cc.Layer.extend({
         this.addChild(enemyFighter2,10,GameSceneNodeTag.Enemy);
 
         //player
-        this.fighter = new Figether("#gameplay.fighter.png", this.space);
+        this.fighter = new Fighter("#gameplay.fighter.png", this.space);
         this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
         this.addChild(this.fighter,10,GameSceneNodeTag.Fighter);
 
@@ -98,8 +99,8 @@ var GamePlayLayer = cc.Layer.extend({
             onTouchBegan: function(touch,event){
                 return true;
             },
-            onTouchMoved: function(touch,evnet){
-                var target = evnet.getCurrentTarget();
+            onTouchMoved: function(touch,event){
+                var target = event.getCurrentTarget();
                 var delta = touch.getDelta();
                 //移动当前精灵的坐标位置
                 var pos_x = target.body.getPos().x + delta.x;
@@ -121,6 +122,130 @@ var GamePlayLayer = cc.Layer.extend({
 
 
     },
+
+    //////////////////////////////////Begin//////////////////////////////////
+    collisionBegin: function(arbiter,space){
+        var shapes = arbiter.getShapes();
+        var bodyA = shapes[0].getBody();
+        var bodyB = shapes[1].getBody();
+
+        var spriteA = bodyA.data;
+        var spriteB = bodyB.data;
+        //enemy collision bullet
+        //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
+            spriteA.setVisible(false);      //bullet 消失
+            //cc.pool.putInPool(spriteA);
+            this.handleBulletCollidingWithEnemy(spriteB);
+            return false;
+        }
+        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && bullet.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
+            spriteB.setVisible(false);
+            //cc.pool.putInPool(spriteB);
+            this.handleBulletCollidingWithEnemy(spriteA);
+            return false;
+        }
+        //fighter collision enemy
+        //Fighter.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Fighter && spriteB instanceof Enemy && spriteB.isVisible()){
+            //cc.pool.putInPool(spriteA);
+            this.handleFighterCollidingWithEnemy(spriteB);
+            return false;
+        }
+        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && Fighter.prototype是否存在于参数 spriteB 的原型链上
+        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Fighter){
+            //cc.pool.putInPool(spriteB);
+            this.handleFighterCollidingWithEnemy(spriteA);
+        }
+        return false;
+    },
+    update: function (dt) {
+        var timeStep = 0.03;
+        this.space.step(timeStep);
+    },
+    handleBulletCollidingWithEnemy: function (enemy) {
+        enemy.hitPoints--;
+        if(enemy.hitPoints == 0){
+            var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
+            if(node){
+                this.removeChild(node);
+            }
+            //爆炸粒子特效
+            var explosion = new cc.ParticleSystem(res.explosion_plist);
+            explosion.x = enemy.x;
+            explosion.y = enemy.y;
+            this.addChild(explosion,2,GameSceneNodeTag.ExplosionParticleSystem);
+            //爆炸音效
+            if(effectStatus ==BOOL.YES){
+                cc.audioEngine.playEffect(res_platform.effectExplosion);
+            }
+
+            switch (EnemyTypes){
+                case EnemyTypes.Enemy_Stone:
+                    this.score += EnemyTypes.Enemy_Stone;
+                    this.scorePlaceholder += EnemyTypes.Enemy_Stone;
+                    break;
+                case EnemyTypes.Enemy_1:
+                    this.score += EnemyTypes.Enemy_1;
+                    this.scorePlaceholder += EnemyTypes.Enemy_1;
+                    break;
+                case EnemyTypes.Enemy_2:
+                    this.score += EnemyTypes.Enemy_2;
+                    this.scorePlaceholder += EnemyTypes.Enemy_2;
+                    break;
+                case EnemyTypes.Enemy_Planet:
+                    this.score += EnemyTypes.Enemy_Planet;
+                    this.scorePlaceholder += EnemyTypes.Enemy_Planet;
+                    break;
+            }
+            //每获得1000分，生命值+1，scorePlaceholder = 0;
+            if(this.scorePlaceholder >= 1000){
+                this.fighter.hitPoints++;
+                this.scorePlaceholder -= 1000;
+                this.updateStatusBarFighter();
+            }
+            this.updateStatusBarScore();
+            //敌人消失
+            enemy.setVisible(false);
+            enemy.spawn();
+        }
+    },
+    //处理玩家与敌人的碰撞检测
+    handleFighterCollidingWithEnemy: function (enemy) {
+        var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
+        if(node){
+            this.removeChild(node);
+        }
+        var explosion = new cc.ParticleSystem(res.explosion_plist);
+        explosion.x = this.fighter.x;
+        explosion.y = this.fighter.y;
+        this.addChild(explosion, 2, GameSceneNodeTag.ExplosionParticleSystem);
+        if(effectStatus ==BOOL.YES){
+            cc.audioEngine.playEffect(res_platform.effectExplosion);
+        }
+        //--enemy 消失
+        enemy.setVisible(false);
+        enemy.spawn();
+        //--fighter 消失
+        this.fighter.hitPoints--;
+        this.updateStatusBarFighter();
+        //--game over
+        if(this.fighter.hitPoints <= 0){
+            cc.log("GameOver");
+            var scene = new GameOverScene();
+            var layer = new GameOverLayer(this.score);
+            scene.addChild(layer);
+            cc.director.pushScene(new cc.TransitionFade(1.0,scene));
+        }else{
+            this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
+            var ac1 = cc.show();
+            var ac2 = cc.fadeIn(3);
+            var seq = cc.sequence(ac1,ac2);
+            this.fighter.runAction(seq);
+        }
+    },
+    ////////////////////////////////// End //////////////////////////////////
     menuPauseCallback: function(sender){
         //播放音效
         if(effectStatus == BOOL.YES){
@@ -176,6 +301,7 @@ var GamePlayLayer = cc.Layer.extend({
     //Fighter shoot bullet
     shootBullet:function(dt){
         if(this.fighter && this.fighter.isVisible()){
+            //var bullet = new Bullet("#gameplay.bullet.png", this.space);
             var bullet = Bullet.create("#gameplay.bullet.png",this.space);
             bullet.velocity = Sprite_Velocity.Bullet;
             if(bullet.getParent() == null){
@@ -185,129 +311,6 @@ var GamePlayLayer = cc.Layer.extend({
             bullet.shootBulletFromFighter(cc.p(this.fighter.x, this.fighter.y + this.fighter.getContentSize().height/2));
         }
     },
-    //////////////////////////////////Begin//////////////////////////////////
-    collisionBegin: function(arbiter,space){
-        var shapes = arbiter.getShapes();
-        var bodyA = shapes[0].getBody();
-        var bodyB = shapes[1].getBody();
-
-        var spriteA = bodyA.data;
-        var spriteB = bodyB.data;
-        //enemy collision bullet
-        //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
-        if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
-            spriteA.setVisible(false);      //bullet 消失
-            //cc.pool.putInPool(spriteA);
-            this.handleBulletCollidingWithEnemy(spriteB);
-            return false;
-        }
-        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && bullet.prototype是否存在于参数 spriteB 的原型链上
-        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
-            spriteB.setVisible(false);
-            //cc.pool.putInPool(spriteB);
-            this.handleBulletCollidingWithEnemy(spriteA);
-            return false;
-        }
-        //fighter collision enemy
-        //Figether.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
-        if(spriteA instanceof Figether && spriteB instanceof Enemy && spriteB.isVisible()){
-            //cc.pool.putInPool(spriteA);
-            this.handleFighterCollidingWithEnemy(spriteB);
-            return false;
-        }
-        //enemy.prototype 是否存在于参数 spriteA 的原型链上 && Figether.prototype是否存在于参数 spriteB 的原型链上
-        if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Figether){
-            //cc.pool.putInPool(spriteB);
-            this.handleFighterCollidingWithEnemy(spriteA);
-        }
-        return false;
-    },
-    update: function (dt) {
-        var timeStep = 0.03;
-        this.space.step(timeStep);
-    },
-    handleBulletCollidingWithEnemy: function (enemy) {
-        enemy.hitPoints--;
-        if(enemy.hitPoints == 0){
-            var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
-            if(node){
-                this.removeChild(node);
-            }
-            //爆炸粒子特效
-            var explosion = new cc.ParticleSystem(res.explosion_plist);
-            explosion.x = enemy.x;
-            explosion.y = enemy.y;
-            this.addChild(explosion,2,GameSceneNodeTag.ExplosionParticleSystem);
-            //爆炸音效
-            if(effectStatus ==BOOL.YES){
-                cc.audioEngine.playEffect(res_platform.effectExplosion);
-            }
-
-            switch (EnemyTypes){
-                case EnemyTypes.Enemy_Stone:
-                    this.score += EnemyTypes.Enemy_Stone;
-                    this.scorePlaceholder += EnemyTypes.Enemy_Stone;
-                    break;
-                case EnemyTypes.Enemy_1:
-                    this.score += EnemyTypes.Enemy_1;
-                    this.scorePlaceholder += EnemyTypes.Enemy_1;
-                    break;
-                case EnemyTypes.Enemy_2:
-                    this.score += EnemyTypes.Enemy_2;
-                    this.scorePlaceholder += EnemyTypes.Enemy_2;
-                    break;
-                case EnemyTypes.Enemy_Planet:
-                    this.score += EnemyTypes.Enemy_Planet;
-                    this.scorePlaceholder += EnemyTypes.Enemy_Planet;
-                    break;
-            }
-            //每获得1000分，生命值+1，scorePlaceholder = 0;
-            if(this.scorePlaceholder >= 1000){
-                this.fighter.hitPoints++;
-                this.scorePlaceholder -= 1000;
-                this.updateStatusBarFighter();
-            }
-            this.updateStatusBarScore();
-            //敌人消失
-            enemy.setVisible(false);
-            enemy.spawn();  //?
-        }
-    },
-    //处理玩家与敌人的碰撞检测
-    handleFighterCollidingWithEnemy: function (enemy) {
-        var node = this.getChildByTag(GameSceneNodeTag.ExplosionParticleSystem);
-        if(node){
-            this.removeChild(node);
-        }
-        var explosion = new cc.ParticleSystem(res.explosion_plist);
-        explosion.x = this.fighter.x;
-        explosion.y = this.fighter.y;
-        this.addChild(explosion, 2, GameSceneNodeTag.ExplosionParticleSystem);
-        if(effectStatus ==BOOL.YES){
-            cc.audioEngine.playEffect(res_platform.effectExplosion);
-        }
-        //--enemy 消失
-        enemy.setVisible(false);
-        enemy.spawn();
-        //--fighter 消失
-        this.fighter.hitPoints--;
-        this.updateStatusBarFighter();
-        //--game over
-        if(this.fighter.hitPoints <= 0){
-            cc.log("GameOver");
-            var scene = new GameOverScene();
-            var layer = new GameOverLayer(this.score);
-            scene.addChild(layer);
-            cc.director.pushScene(new cc.TransitionFade(1.0,scene));
-        }else{
-            this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
-            var ac1 = cc.show();
-            var ac2 = cc.fadeIn(3);
-            var seq = cc.sequence(ac1,ac2);
-            this.fighter.runAction(seq);
-        }
-    },
-    ////////////////////////////////// End //////////////////////////////////
     //在状态栏中设置玩家的生命值
     updateStatusBarFighter: function () {
         //生命值UI
@@ -330,6 +333,7 @@ var GamePlayLayer = cc.Layer.extend({
         var lifeLabel = new cc.LabelBMFont("X" + this.fighter.hitPoints, res.BMFont_fnt);
         lifeLabel.x = fg + 40;
         lifeLabel.y = fg;
+        lifeLabel.setScale(0.5);
         this.addChild(lifeLabel, 20, GameSceneNodeTag.StatusBarLifeNode);
     },
     //在状态栏中显示得分
@@ -385,7 +389,7 @@ var GamePlayLayer = cc.Layer.extend({
 var GamePlayScene = cc.Scene.extend({
     onEnter: function(){
         this._super();
-        var layer = new GamePlayLayer;
+        var layer = new GamePlayLayer();
         this.addChild(layer);
     }
 

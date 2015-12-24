@@ -1,7 +1,7 @@
 /**
  * Created by cimn on 2015/12/8.
  */
-var Figether = cc.PhysicsSprite.extend({
+var Fighter = cc.PhysicsSprite.extend({
     hitPoints: true,        //当前的生命值
     space: null,            //所在的物理空间
     ctor: function(spriteFrameName,space){
@@ -23,7 +23,7 @@ var Figether = cc.PhysicsSprite.extend({
         var shape = new cp.PolyShape(this.body,verts,cp.vzero);
         shape.setElasticity(0.5);
         shape.setFriction(0.5);
-        shape.setCollisionType(Collision_Type);
+        shape.setCollisionType(Collision_Type.Fighter);
         this.space.addShape(shape);
 
         this.hitPoints = Fighter_hitPoints;
