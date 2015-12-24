@@ -334,7 +334,6 @@ var GamePlayLayer = cc.Layer.extend({
         lifeLabel.x = fg + 40;
         lifeLabel.y = fg;
         this.addChild(lifeLabel, 20, GameSceneNodeTag.StatusBarLifeNode);
-
     },
     //在状态栏中显示得分
     updateStatusBarScore: function () {
@@ -371,6 +370,10 @@ var GamePlayLayer = cc.Layer.extend({
         cc.log("GamePlayLayer onExitTransitionDidStart");
         //stop bgm
         cc.audioEngine.stopMusic(res_platform.musicGame);
+    },
+    onEnter: function () {
+        this._super();
+        cc.log("GamePlayLayer onEnter");
     },
     onEnterTransitionDidFinish: function(){
         this._super();
