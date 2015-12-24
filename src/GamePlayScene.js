@@ -225,6 +225,10 @@ var GamePlayLayer = cc.Layer.extend({
         }
         return false;
     },
+    update: function (dt) {
+        var timeStep = 0.03;
+        this.space.step(timeStep);
+    },
     handleBulletCollidingWithEnemy: function (enemy) {
         enemy.hitPoints--;
         if(enemy.hitPoints == 0){
@@ -285,18 +289,67 @@ var GamePlayLayer = cc.Layer.extend({
         if(effectStatus ==BOOL.YES){
             cc.audioEngine.playEffect(res_platform.effectExplosion);
         }
-        //enemy 消失
+        //--enemy 消失
         enemy.setVisible(false);
         enemy.spawn();
-        //fighter 消失
+        //--fighter 消失
         this.fighter.hitPoints--;
         this.updateStatusBarFighter();
+        //--game over
+        if(this.fighter.hitPoints <= 0){
+            cc.log("GameOver");
+            var scene = new GameOverScene();
+            var layer = new GameOverLayer(this.score);
+            scene.addChild(layer);
+            cc.director.pushScene(new cc.TransitionFade(1.0,scene));
+        }else{
+            this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
+            var ac1 = cc.show();
+            var ac2 = cc.fadeIn(3);
+            var seq = cc.sequence(ac1,ac2);
+            this.fighter.runAction(seq);
+        }
     },
+    ////////////////////////////////// End //////////////////////////////////
+    //在状态栏中设置玩家的生命值
     updateStatusBarFighter: function () {
+        //生命值UI
+        var n = this. getChildByTag(GameSceneNodeTag.StatusBarFighterNode);
+        if(n){
+            this.removeChild(n);
+        }
+        var fg = new cc.Sprite("#gameplay.life.png");
+        fg.x = winSize.width - 80;
+        fg.y = winSize.height -28;
+        this.addChild(fg, 20, GameSceneNodeTag.StatusBarFighterNode);
+        //UI x 生命值
+        var n2 = this.getChildByTag(GameSceneNodeTag.StatusBarLifeNode);
+        if(n2){
+            this.removeChild(n2);
+        }
+        if(this.fighter.hitPoints<0){
+            this.fighter.hitPoints = 0;
+        }
+        var lifeLabel = new cc.LabelBMFont("X" + this.fighter.hitPoints, res.BMFont_fnt);
+        lifeLabel.x = fg + 40;
+        lifeLabel.y = fg;
+        this.addChild(lifeLabel, 20, GameSceneNodeTag.StatusBarLifeNode);
 
     },
+    //在状态栏中显示得分
     updateStatusBarScore: function () {
-
+        cc.log("this.score =  " + this.score);
+        //移除上一次的精灵
+        var n = this.getChildByTag(GameSceneNodeTag.StatusBarScore);
+        if(n){
+            this.removeChild(n);
+        }
+        //更新分数
+        var scoreLabel = new cc.LabelBMFont(this.score,res.BMFont_fnt);
+        scoreLabel.setScale(0.8);
+        scoreLabel.x = winSize.width / 2;
+        scoreLabel.y = winSize.height -28;
+        this.addChild(scoreLabel, 20, GameSceneNodeTag.StatusBarScore);
     },
     onExit: function(){
         cc.log("GamePlayLayer onExit");
@@ -313,11 +366,17 @@ var GamePlayLayer = cc.Layer.extend({
         cc.pool.drainAllPools();
         this._super();
     },
+    onExitTransitionDidStart: function () {
+        this._super();
+        cc.log("GamePlayLayer onExitTransitionDidStart");
+        //stop bgm
+        cc.audioEngine.stopMusic(res_platform.musicGame);
+    },
     onEnterTransitionDidFinish: function(){
         this._super();
         cc.log("GamePlayLayer onEnterTransitionDidFinish");
         if(musicStatus == BOOL.YES){
-            //play bg
+            //play bgm
             cc.audioEngine.playMusic(res_platform.musicGame,true);
         }
     }
