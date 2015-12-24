@@ -43,20 +43,20 @@ var GamePlayLayer = cc.Layer.extend({
 
         //bg---sprite
         var sprite1 = new cc.Sprite("#gameplay.bg.sprite-1.png");
-        sprite1.setPosition(cc.p(-50,-50));
+        sprite1.setPosition(cc.p(-50, -50));
         this.addChild(sprite1,0,GameSceneNodeTag.BatchBackground);
 
-        var ac1 = cc.MoveBy(20,cc.p(500, 600));
+        var ac1 = cc.moveBy(20,cc.p(500, 600));
         var ac2 = ac1.reverse();
         var as1 = cc.sequence(ac1,ac2);
-        sprite1.runAction(cc.repeatForever(new cc.EaseBackInOut(as1)));
+        sprite1.runAction(cc.repeatForever(new cc.EaseSineInOut(as1)));
 
         //bg---sprite2
         var sprite2 = new cc.Sprite("#gameplay.bg.sprite-2.png");
-        sprite2.setPosition(cc.p(winSize.width,0));
+        sprite2.setPosition(cc.p(winSize.width, 0));
         this.addChild(sprite2,0,GameSceneNodeTag.BatchBackground);
 
-        var ac3 = cc.MoveBy(10,cc.p(-600,600));
+        var ac3 = cc.moveBy(10,cc.p(-600,600));
         var ac4 = ac3.reverse();
         var as2 = cc.sequence(ac3,ac4);
         sprite2.runAction(cc.repeatForever(new cc.EaseExponentialInOut(as2)));
@@ -112,9 +112,9 @@ var GamePlayLayer = cc.Layer.extend({
         this.touchFighterlistener.retain(); //if in jsb
 
         //状态栏中设置玩家生命值
-        this.updataStatusBarFighter();
+        this.updateStatusBarFighter();
         //状态栏中显示得分
-        this.updataStatusBarScore();
+        this.updateStatusBarScore();
 
         //每0.2s 调用shootBullet函数发射1发炮弹.
         this.schedule(this.shootBullet, 0.2);
@@ -197,31 +197,28 @@ var GamePlayLayer = cc.Layer.extend({
         //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
             spriteA.setVisible(false);      //bullet 消失
-            cc.pool.putInPool(spriteA);
+            //cc.pool.putInPool(spriteA);
             this.handleBulletCollidingWithEnemy(spriteB);
             return false;
         }
         //enemy.prototype 是否存在于参数 spriteA 的原型链上 && bullet.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
             spriteB.setVisible(false);
-            cc.pool.putInPool(spriteB);
+            //cc.pool.putInPool(spriteB);
             this.handleBulletCollidingWithEnemy(spriteA);
             return false;
         }
         //fighter collision enemy
         //Figether.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Figether && spriteB instanceof Enemy && spriteB.isVisible()){
-            spriteA.setVisible(false);
-            cc.pool.putInPool(spriteA);
+            //cc.pool.putInPool(spriteA);
             this.handleFighterCollidingWithEnemy(spriteB);
             return false;
         }
         //enemy.prototype 是否存在于参数 spriteA 的原型链上 && Figether.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Figether){
-            spriteB.setVisible(false);
-            cc.pool.putInPool(spriteB);
+            //cc.pool.putInPool(spriteB);
             this.handleFighterCollidingWithEnemy(spriteA);
-            return false;
         }
         return false;
     },
