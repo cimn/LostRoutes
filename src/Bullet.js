@@ -12,7 +12,7 @@ var Bullet =  cc.PhysicsSprite.extend({
         this.space.addBody(this.body);
 
 
-        this.shape = new cp.BoxShape(this.body,this.getContentSize().width,this.getContentSize().height);
+        var shape = new cp.BoxShape(this.body,this.getContentSize().width,this.getContentSize().height);
         shape.setElasticity(0.5);
         shape.setFriction(0.5);
         shape.setCollisionType(Collision_Type.Bullet);

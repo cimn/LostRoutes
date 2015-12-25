@@ -68,7 +68,7 @@ var GamePlayLayer = cc.Layer.extend({
             this.menuPauseCallback,this);
 
         var pauseMenu = new cc.Menu(pauseMenuItem);
-        pauseMenu.setPosition(cc.p(30,winSize.height-30));
+        pauseMenu.setPosition(cc.p(30,winSize.height - 30));
         this.addChild(pauseMenu, 200, 999);
 
         //add stone1
@@ -181,22 +181,22 @@ var GamePlayLayer = cc.Layer.extend({
                 cc.audioEngine.playEffect(res_platform.effectExplosion);
             }
 
-            switch (EnemyTypes){
+            switch (enemy.enemyType){
                 case EnemyTypes.Enemy_Stone:
-                    this.score += EnemyTypes.Enemy_Stone;
-                    this.scorePlaceholder += EnemyTypes.Enemy_Stone;
+                    this.score += EnemyScores.Enemy_Stone;
+                    this.scorePlaceholder += EnemyScores.Enemy_Stone;
                     break;
                 case EnemyTypes.Enemy_1:
-                    this.score += EnemyTypes.Enemy_1;
-                    this.scorePlaceholder += EnemyTypes.Enemy_1;
+                    this.score += EnemyScores.Enemy_1;
+                    this.scorePlaceholder += EnemyScores.Enemy_1;
                     break;
                 case EnemyTypes.Enemy_2:
-                    this.score += EnemyTypes.Enemy_2;
-                    this.scorePlaceholder += EnemyTypes.Enemy_2;
+                    this.score += EnemyScores.Enemy_2;
+                    this.scorePlaceholder += EnemyScores.Enemy_2;
                     break;
                 case EnemyTypes.Enemy_Planet:
-                    this.score += EnemyTypes.Enemy_Planet;
-                    this.scorePlaceholder += EnemyTypes.Enemy_Planet;
+                    this.score += EnemyScores.Enemy_Planet;
+                    this.scorePlaceholder += EnemyScores.Enemy_Planet;
                     break;
             }
             //每获得1000分，生命值+1，scorePlaceholder = 0;
@@ -331,8 +331,8 @@ var GamePlayLayer = cc.Layer.extend({
             this.fighter.hitPoints = 0;
         }
         var lifeLabel = new cc.LabelBMFont("X" + this.fighter.hitPoints, res.BMFont_fnt);
-        lifeLabel.x = fg + 40;
-        lifeLabel.y = fg;
+        lifeLabel.x = fg.x + 40;
+        lifeLabel.y = fg.y;
         lifeLabel.setScale(0.5);
         this.addChild(lifeLabel, 20, GameSceneNodeTag.StatusBarLifeNode);
     },
@@ -348,8 +348,9 @@ var GamePlayLayer = cc.Layer.extend({
         var scoreLabel = new cc.LabelBMFont(this.score,res.BMFont_fnt);
         scoreLabel.setScale(0.8);
         scoreLabel.x = winSize.width / 2;
-        scoreLabel.y = winSize.height -28;
-        this.addChild(scoreLabel, 20, GameSceneNodeTag.StatusBarScore);
+        scoreLabel.y = winSize.height -30;
+        try{
+        this.addChild(scoreLabel, 20, GameSceneNodeTag.StatusBarScore);}catch(err){alert("FuckU!!!!")}
     },
     onExit: function(){
         cc.log("GamePlayLayer onExit");

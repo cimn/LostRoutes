@@ -10,12 +10,12 @@ var GameOverLayer = cc.Layer.extend({
         this._super();
         this.score = score;
 
-        var bg = cc.TMXTiledMap(res.blue_bg_tmx);
+        var bg = new cc.TMXTiledMap(res.blue_bg_tmx);
         this.addChild(bg);
         //bg--particle
         var ps = cc.ParticleSystem(res.light_plist);
         ps.x = winSize.width / 2;
-        ps.y = winSize.height / 2 - 50;
+        ps.y = winSize.height / 2 - 100;
         this.addChild(ps);
 
         //bg--png
@@ -24,7 +24,7 @@ var GameOverLayer = cc.Layer.extend({
         page.y = winSize.height /2 - 300;
         this.addChild(page);
 
-        var highscore = new cc.sys.localStorage.getItem(HIGHSCORE_KEY);
+        var highscore =  cc.sys.localStorage.getItem(HIGHSCORE_KEY);
         highscore = highscore == null ? 0 : highscore;
         if(highscore < this.score){
             highscore = this.score;
