@@ -13,7 +13,7 @@ var GameOverLayer = cc.Layer.extend({
         var bg = new cc.TMXTiledMap(res.blue_bg_tmx);
         this.addChild(bg);
         //bg--particle
-        var ps = cc.ParticleSystem(res.light_plist);
+        var ps = new cc.ParticleSystem(res.light_plist);
         ps.x = winSize.width / 2;
         ps.y = winSize.height / 2 - 100;
         this.addChild(ps);
@@ -21,7 +21,7 @@ var GameOverLayer = cc.Layer.extend({
         //bg--png
         var page = new cc.Sprite("#gameover.page.png");
         page.x = winSize.width /2;
-        page.y = winSize.height /2 - 300;
+        page.y = winSize.height -300;
         this.addChild(page);
 
         var highscore =  cc.sys.localStorage.getItem(HIGHSCORE_KEY);
@@ -33,8 +33,8 @@ var GameOverLayer = cc.Layer.extend({
 
         //最高分UI
         var hscore = new cc.Sprite("#Score.png");
-        hscore.x = 220;
-        hscore.y = winSize.height - 700;
+        hscore.x = 300;
+        hscore.y = winSize.height - 650;
         this.addChild(hscore);
 
         var highScoreLabel = new cc.LabelBMFont(highscore,res.BMFont_fnt);
