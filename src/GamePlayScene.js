@@ -149,13 +149,11 @@ var GamePlayLayer = cc.Layer.extend({
         //fighter collision enemy
         //Fighter.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Fighter && spriteB instanceof Enemy && spriteB.isVisible()){
-            //cc.pool.putInPool(spriteA);
             this.handleFighterCollidingWithEnemy(spriteB);
             return false;
         }
         //enemy.prototype 是否存在于参数 spriteA 的原型链上 && Fighter.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Fighter){
-            //cc.pool.putInPool(spriteB);
             this.handleFighterCollidingWithEnemy(spriteA);
         }
         return false;
@@ -238,11 +236,11 @@ var GamePlayLayer = cc.Layer.extend({
             scene.addChild(layer);
             cc.director.pushScene(new cc.TransitionFade(1.0,scene));
         }else{
-            this.fighter.body.setPos(cc.p(winSize.width / 2, 70));
+            try{this.fighter.body.setPos(cc.p(winSize.width / 2, 100));
             var ac1 = cc.show();
-            var ac2 = cc.fadeIn(3);
+            var ac2 = cc.fadeIn(3.0);
             var seq = cc.sequence(ac1,ac2);
-            this.fighter.runAction(seq);
+            this.fighter.runAction(seq);}catch(e){alert(e.message)}
         }
     },
     ////////////////////////////////// End //////////////////////////////////
@@ -349,8 +347,8 @@ var GamePlayLayer = cc.Layer.extend({
         scoreLabel.setScale(0.8);
         scoreLabel.x = winSize.width / 2;
         scoreLabel.y = winSize.height -30;
-        try{
-        this.addChild(scoreLabel, 20, GameSceneNodeTag.StatusBarScore);}catch(err){alert("FuckU!!!!")}
+
+        this.addChild(scoreLabel, 20, GameSceneNodeTag.StatusBarScore);
     },
     onExit: function(){
         cc.log("GamePlayLayer onExit");
