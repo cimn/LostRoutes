@@ -1,16 +1,17 @@
-# Ignore thumbnails created by windows 
-Thumbs.db 
+# Ignore thumbnails created by windows
+Thumbs.db
 
-# Ignore files build by Visual Studio 
+# Ignore files build by Visual Studio
 frameworks/
 runtime/
 tools/
 
-# Ignore files built by WebStorm 
+# Ignore files built by WebStorm
 .idea/
+
 .CMakeLists.txt
 
-# Ignore files built by Cocos Code IDE 
-.settings/ 
+# Ignore files built by Cocos Code IDE
+.settings/
 .metadata/
 .project
