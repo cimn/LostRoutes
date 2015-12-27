@@ -9,8 +9,6 @@ tools/
 # Ignore files built by WebStorm
 .idea/
 
-.CMakeLists.txt
-
 # Ignore files built by Cocos Code IDE
 .settings/
 .metadata/
