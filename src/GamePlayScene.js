@@ -89,7 +89,7 @@ var GamePlayLayer = cc.Layer.extend({
 
         //player
         this.fighter = new Fighter("#gameplay.fighter.png", this.space);
-        this.fighter.body.setPos(cc.p(winSize.width / 2, 100));
+        this.fighter.setPosition(cc.p(winSize.width / 2, 100));
         this.addChild(this.fighter,10,GameSceneNodeTag.Fighter);
 
         //创建触摸飞机事件监听
@@ -135,14 +135,14 @@ var GamePlayLayer = cc.Layer.extend({
         //bullet.prototype 是否存在于参数 spriteA 的原型链上 && enemy.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Bullet && spriteB instanceof Enemy && spriteB.isVisible()){
             spriteA.setVisible(false);      //bullet 消失
-            //cc.pool.putInPool(spriteA);
+            cc.pool.putInPool(spriteA);
             this.handleBulletCollidingWithEnemy(spriteB);
             return false;
         }
         //enemy.prototype 是否存在于参数 spriteA 的原型链上 && bullet.prototype是否存在于参数 spriteB 的原型链上
         if(spriteA instanceof Enemy && spriteA.isVisible() && spriteB instanceof Bullet){
             spriteB.setVisible(false);
-            //cc.pool.putInPool(spriteB);
+            cc.pool.putInPool(spriteB);
             this.handleBulletCollidingWithEnemy(spriteA);
             return false;
         }
@@ -236,11 +236,14 @@ var GamePlayLayer = cc.Layer.extend({
             scene.addChild(layer);
             cc.director.pushScene(new cc.TransitionFade(1.0,scene));
         }else{
-            this.fighter.setPosition(cc.p(winSize.width / 2, 100));     //引用重写setPosition*相当于.body.setPos*
+            this.fighter.body.setPos(cc.p(winSize.width / 2, 100));     //引用重写setPosition*相当于.body.setPos*
             var ac1 = cc.show();
             var ac2 = cc.fadeIn(3.0);
             var seq = cc.sequence(ac1,ac2);
-            this.fighter.runAction(seq);
+            this.fighter.setCascadeOpacityEnabled(true);
+            this.fighter.runAction(cc.sequence(seq));
+            //this.fighter.runAction(cc.sequence(cc.show(), cc.fadeIn(3.0), null));
+            cc.log(this.fighter);
         }
     },
     ////////////////////////////////// End //////////////////////////////////
