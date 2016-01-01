@@ -236,14 +236,10 @@ var GamePlayLayer = cc.Layer.extend({
             scene.addChild(layer);
             cc.director.pushScene(new cc.TransitionFade(1.0,scene));
         }else{
-            this.fighter.body.setPos(cc.p(winSize.width / 2, 100));     //引用重写setPosition*相当于.body.setPos*
-            var ac1 = cc.show();
-            var ac2 = cc.fadeIn(3.0);
-            var seq = cc.sequence(ac1,ac2);
+            this.fighter.setPosition(cc.p(winSize.width / 2, 100));     //引用重写setPosition*相当于.body.setPos*
+            var blink = cc.blink(0.8,4);
             this.fighter.setCascadeOpacityEnabled(true);
-            this.fighter.runAction(cc.sequence(seq));
-            //this.fighter.runAction(cc.sequence(cc.show(), cc.fadeIn(3.0), null));
-            cc.log(this.fighter);
+            this.fighter.runAction(blink);
         }
     },
     ////////////////////////////////// End //////////////////////////////////
