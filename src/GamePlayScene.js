@@ -105,7 +105,7 @@ var GamePlayLayer = cc.Layer.extend({
                 //移动当前精灵的坐标位置
                 var pos_x = target.body.getPos().x + delta.x;
                 var pos_y = target.body.getPos().y + delta.y;
-                target.body.setPos(cc.p(pos_x,pos_y));
+                target.setPosition(cc.p(pos_x,pos_y));
             }
         });
         //注册监听器
