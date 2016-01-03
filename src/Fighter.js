@@ -30,8 +30,9 @@ var Fighter = cc.PhysicsSprite.extend({
 
         var ps = new cc.ParticleSystem(res.fire_plist);
         //飞机下面
-        ps.x = this.getContentSize().width / 2;
-        ps.y = 0;
+        //ps.x = this.getContentSize().width / 2;
+        //ps.y = 0;
+        ps.setPosition(this.getContentSize().width / 2, 0);     //if in jsb
         ps.setScale(0.5);
         this.addChild(ps);
     },
